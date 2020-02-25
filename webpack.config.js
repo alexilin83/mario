@@ -6,6 +6,7 @@ module.exports = {
     devServer: {
         contentBase: path.resolve(__dirname, 'src'),
     },
+    devtool: 'cheap-source-map',
     module: {
         rules: [
             {

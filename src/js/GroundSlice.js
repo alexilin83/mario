@@ -1,8 +1,8 @@
 export default class GroundSlice {
-    constructor(type) {
+    constructor(type, y) {
         this.type = type;
+        this.y = y;
         this.sprite = null;
     }
     
 }
-GroundSlice.width = 220;

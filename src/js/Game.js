@@ -43,8 +43,8 @@ export default class Game {
         this.scroller = new Scroller(this);
 
         this.player = new Player(this);
-        
         this.app.stage.addChild(this.player);
+        this.player.play();
     
         this.left.press = () => {
             this.player.vx = -5;
@@ -75,20 +75,19 @@ export default class Game {
         }
     }
     update(delta) {
-        
         if (this.left.isDown) {
-            if (this.player.x < this.w / 2 - this.w / 4) {
+            if (this.player.x < this.w / 2 - 100) {
                 this.scroller.moveViewportXBy(-5);
             } else {
                 this.player.x += this.player.vx;
-                this.player.update();
+                // this.player.update();
             }
         } else if (this.right.isDown) {
-            if (this.player.x > this.w / 2 + this.w / 4) {
+            if (this.player.x > this.w / 2 + 100) {
                 this.scroller.moveViewportXBy(5);
             } else {
                 this.player.x += this.player.vx;
-                this.player.update();
+                // this.player.update();
             }
         }
     }

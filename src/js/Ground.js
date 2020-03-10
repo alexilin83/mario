@@ -11,15 +11,12 @@ export default class Ground extends PIXI.Container {
 
         this.slices = [];
         this.sliceTypes = ['grass', 'gap'];
-        this.createTestMap();
 
         this.sliceWidth = 220;
 
         this.viewportX = 0;
         this.viewportSliceX = 0;
         this.viewportNumSlices = Math.ceil(scroller.game.w / this.sliceWidth) + 1;
-
-        this.addNewSlices();
     }
     setViewportX(viewportX) {
         this.viewportX = this.checkViewportXBounds(viewportX);
@@ -27,34 +24,51 @@ export default class Ground extends PIXI.Container {
         let prevViewportSliceX = this.viewportSliceX;
         this.viewportSliceX = Math.floor(this.viewportX / this.sliceWidth);
 
+        this.removeOldSlices(prevViewportSliceX);
         this.addNewSlices();
     }
     checkViewportXBounds(viewportX) {
         let maxViewportX = (this.slices.length - this.viewportNumSlices) * this.sliceWidth;
         if (viewportX < 0) {
             viewportX = 0;
-        } else if (viewportX >= maxViewportX) {
+        } else if (viewportX > maxViewportX) {
             viewportX = maxViewportX;
         }
         return viewportX;
     }
     addSlice(sliceType, y) {
-        let slice = new GroundSlice(sliceType);
+        let slice = new GroundSlice(sliceType, y);
         this.slices.push(slice);
+    }
+    removeOldSlices(prevViewportSliceX) {
+        let numOldSlices = this.viewportSliceX - prevViewportSliceX;
+        if (numOldSlices > this.viewportNumSlices) {
+            numOldSlices = this.viewportNumSlices;
+        }
+        for (let i = prevViewportSliceX; i < prevViewportSliceX + numOldSlices; i++) {
+            let slice = this.slices[i];
+            if (slice.sprite != null) {
+                this.returnGroundSprite(slice.sprite);
+                this.removeChild(slice.sprite);
+                slice.sprite = null;
+            }
+        }
     }
     addNewSlices() {
         let firstX = -(this.viewportX % this.sliceWidth);
         for (let i = this.viewportSliceX, sliceIndex = 0; i < this.viewportSliceX + this.viewportNumSlices; i++, sliceIndex++) {
             let slice = this.slices[i];
             if (slice.sprite == null && slice.type != this.sliceTypes[1]) {
+                
                 slice.sprite = this.borrowGroundSprite();
+
                 slice.sprite.position.x = firstX + (sliceIndex * this.sliceWidth);
-                slice.sprite.position.y = this.scroller.game.h - 230;
+                slice.sprite.position.y = this.scroller.game.h - slice.y;
+
                 this.addChild(slice.sprite);
             } else if (slice.sprite != null) {
                 slice.sprite.position.x = firstX + (sliceIndex * this.sliceWidth);
             }
-            
         }
     }
     borrowGroundSprite() {
@@ -63,21 +77,4 @@ export default class Ground extends PIXI.Container {
     returnGroundSprite(sliceSprite) {
         return this.pool.returnGround(sliceSprite);
     }
-    createTestWallSpan() {
-        this.addSlice(this.sliceTypes[0]);
-        this.addSlice(this.sliceTypes[0]);
-        this.addSlice(this.sliceTypes[0]);
-        this.addSlice(this.sliceTypes[0]);
-    };
-    createTestGap() {
-        this.addSlice(this.sliceTypes[1]);
-    };
-    createTestMap() {
-        for (var i = 0; i < 10; i++) {
-            this.createTestWallSpan();
-            this.createTestGap();
-            this.createTestWallSpan();
-            this.createTestGap();
-        }
-    };
 }

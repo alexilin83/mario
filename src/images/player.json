@@ -25,7 +25,7 @@
 	"sourceSize": {"w":35,"h":57}
 }},
 "animations": {
-	"mario": ["mario1.png","mario2.png","mario3.png"]
+	"walk": ["player1.png","player2.png","player3.png"]
 },
 "meta": {
 	"app": "https://www.codeandweb.com/texturepacker",

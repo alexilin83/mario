@@ -1,15 +1,13 @@
 import * as PIXI from 'pixi.js';
 
-export default class Player extends PIXI.TilingSprite {
+export default class Player extends PIXI.AnimatedSprite {
     constructor(game) {
-        let texture = game.loader.resources.player.textures['player1.png'];
-        super(texture, 30, 59);
+        let sheet = game.loader.resources.player.spritesheet;
+        super(sheet.animations['walk']);
         this.game = game;
-        this.position.x = 100;
+        this.position.x = game.w / 2 - 15;
         this.position.y = game.h - 230;
+        this.animationSpeed = 0.2;
         this.vx = 0;
-    }
-    update() {
-        this.tilePosition.x += 30;
     }
 }

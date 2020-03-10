@@ -7,7 +7,7 @@ export default class Sky extends PIXI.TilingSprite {
         this.scroller = scroller;
         this.position.y = 50;
         this.viewportX = 0;
-        this.deltaX = 1;
+        this.deltaX = 0.4;
     }
     setViewportX(newViewportX) {
         let distanceTravelled = newViewportX - this.viewportX;

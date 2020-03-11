@@ -6,10 +6,9 @@ export default class Game {
     constructor() {
         this.w = window.innerWidth;
         this.h = window.innerHeight;
+
         this.app = null;
         this.loader = PIXI.Loader.shared;
-
-        this.viewportX = 0;
 
         this.scroller = null;
 
@@ -44,22 +43,33 @@ export default class Game {
 
         this.player = new Player(this);
         this.app.stage.addChild(this.player);
-        this.player.play();
     
         this.left.press = () => {
             this.player.vx = -5;
+            if (this.player.transform.scale.x == 1) {
+                this.player.x += 30;
+                this.player.transform.scale.x = -1;
+            }
+            this.player.play();
         }
         this.left.release = () => {
             if (!this.right.isDown) {
                 this.player.vx = 0;
+                this.player.gotoAndStop(0);
             }
         }
         this.right.press = () => {
             this.player.vx = 5;
+            if (this.player.transform.scale.x == -1) {
+                this.player.x -= 30;
+                this.player.transform.scale.x = 1;
+            }
+            this.player.play();
         }
         this.right.release = () => {
             if (!this.left.isDown) {
                 this.player.vx = 0;
+                this.player.gotoAndStop(0);
             }
         }
 
@@ -76,18 +86,26 @@ export default class Game {
     }
     update(delta) {
         if (this.left.isDown) {
-            if (this.player.x < this.w / 2 - 100) {
-                this.scroller.moveViewportXBy(-5);
-            } else {
+            if (this.player.x > 35) {
                 this.player.x += this.player.vx;
-                // this.player.update();
             }
+            
         } else if (this.right.isDown) {
             if (this.player.x > this.w / 2 + 100) {
                 this.scroller.moveViewportXBy(5);
             } else {
                 this.player.x += this.player.vx;
-                // this.player.update();
+            }
+        }
+
+        for (let i = 0, l = this.scroller.ground.slices.length - 1; i < l; i++) {
+            let sprite = this.scroller.ground.slices[i].sprite;
+            if (sprite && (this.player.x >= sprite.x && this.player.x < sprite.x + sprite.width)) {
+                console.log(111);
+                
+                this.player.y = sprite.y;
+            } else if (this.player.x >= sprite.x && this.player.x < sprite.x + sprite.width) {
+
             }
         }
     }
@@ -128,5 +146,38 @@ export default class Game {
         }
     
         return key;
+    }
+    hitTestRectangle(r1, r2) {
+        let hit, combineHalfWidths, combineHalfHeights, vx, vy;
+
+        hit = false;
+
+        r1.halfWidth = r1.width / 2;
+        r1.halfHeight = r1.height / 2;
+        r2.halfWidth = r2.width / 2;
+        r2.halfHeight = r2.height / 2;
+
+        r1.centerX = r1.x + r1.halfWidth;
+        r1.centerY = r1.y + r1.halfHeight;
+        r2.centerX = r2.x + r2.halfWidth;
+        r2.centerY = r2.y + r2.halfHeight;
+
+        vx = r1.centerX - r2.centerX;
+        vy = r1.centerY - r2.centerY;
+
+        combineHalfWidths = r1.halfWidth + r2.halfWidth;
+        combineHalfHeights = r1.halfHeight + r2.halfHeight;
+
+        if (Math.abs(vx) < combineHalfWidths) {
+            if (Math.abs(vy) < combineHalfHeights) {
+                hit = true;
+            } else {
+                hit = false;
+            }
+        } else {
+            hit = false;
+        }
+
+        return hit;
     }
 }

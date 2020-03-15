@@ -40,20 +40,6 @@ export default class Ground extends PIXI.Container {
         let slice = new GroundSlice(sliceType, y);
         this.slices.push(slice);
     }
-    removeOldSlices(prevViewportSliceX) {
-        let numOldSlices = this.viewportSliceX - prevViewportSliceX;
-        if (numOldSlices > this.viewportNumSlices) {
-            numOldSlices = this.viewportNumSlices;
-        }
-        for (let i = prevViewportSliceX; i < prevViewportSliceX + numOldSlices; i++) {
-            let slice = this.slices[i];
-            if (slice.sprite != null) {
-                this.returnGroundSprite(slice.sprite);
-                this.removeChild(slice.sprite);
-                slice.sprite = null;
-            }
-        }
-    }
     addNewSlices() {
         let firstX = -(this.viewportX % this.sliceWidth);
         for (let i = this.viewportSliceX, sliceIndex = 0; i < this.viewportSliceX + this.viewportNumSlices; i++, sliceIndex++) {
@@ -68,6 +54,20 @@ export default class Ground extends PIXI.Container {
                 this.addChild(slice.sprite);
             } else if (slice.sprite != null) {
                 slice.sprite.position.x = firstX + (sliceIndex * this.sliceWidth);
+            }
+        }
+    }
+    removeOldSlices(prevViewportSliceX) {
+        let numOldSlices = this.viewportSliceX - prevViewportSliceX;
+        if (numOldSlices > this.viewportNumSlices) {
+            numOldSlices = this.viewportNumSlices;
+        }
+        for (let i = prevViewportSliceX; i < prevViewportSliceX + numOldSlices; i++) {
+            let slice = this.slices[i];
+            if (slice.sprite != null) {
+                this.returnGroundSprite(slice.sprite);
+                this.removeChild(slice.sprite);
+                slice.sprite = null;
             }
         }
     }

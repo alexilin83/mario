@@ -6,6 +6,7 @@ export default class Game {
     constructor() {
         this.w = window.innerWidth;
         this.h = window.innerHeight;
+        this.gravity = 3;
 
         this.app = null;
         this.loader = PIXI.Loader.shared;
@@ -16,6 +17,7 @@ export default class Game {
 
         this.left = this.keyboard("ArrowLeft"),
         this.right = this.keyboard("ArrowRight");
+        this.space = this.keyboard(" ");
 
         this.setup = this.setup.bind(this);
     }
@@ -43,35 +45,7 @@ export default class Game {
 
         this.player = new Player(this);
         this.app.stage.addChild(this.player);
-    
-        this.left.press = () => {
-            this.player.vx = -5;
-            if (this.player.transform.scale.x == 1) {
-                this.player.x += 30;
-                this.player.transform.scale.x = -1;
-            }
-            this.player.play();
-        }
-        this.left.release = () => {
-            if (!this.right.isDown) {
-                this.player.vx = 0;
-                this.player.gotoAndStop(0);
-            }
-        }
-        this.right.press = () => {
-            this.player.vx = 5;
-            if (this.player.transform.scale.x == -1) {
-                this.player.x -= 30;
-                this.player.transform.scale.x = 1;
-            }
-            this.player.play();
-        }
-        this.right.release = () => {
-            if (!this.left.isDown) {
-                this.player.vx = 0;
-                this.player.gotoAndStop(0);
-            }
-        }
+        this.player.y = this.scroller.ground.slices[0].sprite.y;
 
         this.app.ticker.add(delta => this.update(delta));
     }
@@ -84,30 +58,70 @@ export default class Game {
             array.splice(pos, 0, groundSlice);
         }
     }
-    update(delta) {
+    update() {
         if (this.left.isDown) {
             if (this.player.x > 35) {
-                this.player.x += this.player.vx;
+                this.player.vx = -5;
+            } else {
+                this.player.vx = 0;
             }
-            
-        } else if (this.right.isDown) {
+            if (this.player.transform.scale.x == 1) {
+                this.player.x += 30;
+                this.player.transform.scale.x = -1;
+            }
+        }
+        if (this.right.isDown) {
+            if (this.player.transform.scale.x == -1) {
+                this.player.x -= 30;
+                this.player.transform.scale.x = 1;
+            }
             if (this.player.x > this.w / 2 + 100) {
                 this.scroller.moveViewportXBy(5);
+                this.player.vx = 0;
             } else {
-                this.player.x += this.player.vx;
+                this.player.vx = 5;
             }
+        }
+        if (!this.left.isDown && !this.right.isDown) {
+            this.player.vx = 0;
+            this.player.gotoAndStop(0);
+        } else {
+            this.player.play();
         }
 
         for (let i = 0, l = this.scroller.ground.slices.length - 1; i < l; i++) {
             let sprite = this.scroller.ground.slices[i].sprite;
-            if (sprite && (this.player.x >= sprite.x && this.player.x < sprite.x + sprite.width)) {
-                console.log(111);
-                
-                this.player.y = sprite.y;
-            } else if (this.player.x >= sprite.x && this.player.x < sprite.x + sprite.width) {
-
+            if (sprite && this.player.x > sprite.x && this.player.x + this.player.width < sprite.x + sprite.width) {
+                if (this.space.isDown) {
+                    if (!this.player.isFalling && this.player.y > sprite.y - this.player.jumpTreshold + this.player.height) {
+                        console.log(111);
+                        this.player.vy = -5;
+                    } else if (this.player.y <= sprite.y) {
+                        console.log(222);
+                        this.player.isFalling = true;
+                        this.player.vy = 5 + this.gravity;
+                    } else {
+                        console.log(333);
+                        this.player.vy = 0;
+                        this.player.y = sprite.y;
+                        this.player.isFalling = false;
+                    }
+                } else {
+                    if (this.player.y > sprite.y - ) {
+                        this.player.vy = 0;
+                        this.player.y = sprite.y;
+                        this.player.isFalling = false;
+                    } else {
+                        this.player.isFalling = true;
+                        this.player.vy = 5 + this.gravity;
+                    }
+                }
             }
         }
+
+        this.player.x += this.player.vx;
+        this.player.y += this.player.vy;
+
     }
     keyboard(value) {
         let key = {};

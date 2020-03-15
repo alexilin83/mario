@@ -5,10 +5,12 @@ export default class Player extends PIXI.AnimatedSprite {
         let sheet = game.loader.resources.player.spritesheet;
         super(sheet.animations['walk']);
         this.game = game;
-        this.position.x = game.w / 2 - 15;
+        this.animationSpeed = 0.2;
         this.position.x = 0;
         this.position.y = 0;
-        this.animationSpeed = 0.2;
         this.vx = 0;
+        this.vy = 0;
+        this.isFalling = false;
+        this.jumpTreshold = 300;
     }
 }

@@ -5,7 +5,8 @@ export default class MapBuilder {
         this.createMap();
     }
     createMap() {
-        this.createGroundSpan(0, 5);
+        this.createGroundSpan(0, 2);
+        this.createGap(1);
         this.createGroundSpan(1, 4);
         this.createGap(1);
         this.createGroundSpan(0, 4);
@@ -18,7 +19,7 @@ export default class MapBuilder {
     }
     createGap(spanLength) {
         for (let i = 0; i < spanLength; i++) {
-            this.ground.addSlice(this.ground.sliceTypes[1]);
+            this.ground.addSlice(this.ground.sliceTypes[1], this.ground.scroller.game.h);
         }
     }
     createGroundSpan(heightIndex, spanLength) {

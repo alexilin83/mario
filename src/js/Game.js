@@ -47,6 +47,17 @@ export default class Game {
         this.app.stage.addChild(this.player);
         this.player.y = this.scroller.ground.slices[0].sprite.y;
 
+        this.space.press = () => {
+            if (this.player.isOnGround) {
+                this.player.isJumping = true;
+                this.player.isOnGround = false;
+            }
+        }
+        this.space.release = () => {
+            this.player.isJumping = false;
+            this.player.isFalling = true;
+        }
+
         this.app.ticker.add(delta => this.update(delta));
     }
     shuffle (array) {
@@ -90,33 +101,38 @@ export default class Game {
         }
 
         for (let i = 0, l = this.scroller.ground.slices.length - 1; i < l; i++) {
-            let sprite = this.scroller.ground.slices[i].sprite;
-            if (sprite && this.player.x > sprite.x && this.player.x + this.player.width < sprite.x + sprite.width) {
-                if (this.space.isDown) {
-                    if (!this.player.isFalling && this.player.y > sprite.y - this.player.jumpTreshold + this.player.height) {
-                        console.log(111);
-                        this.player.vy = -5;
-                    } else if (this.player.y <= sprite.y) {
-                        console.log(222);
-                        this.player.isFalling = true;
-                        this.player.vy = 5 + this.gravity;
-                    } else {
-                        console.log(333);
-                        this.player.vy = 0;
-                        this.player.y = sprite.y;
-                        this.player.isFalling = false;
+            let slice = this.scroller.ground.slices[i];
+            let sprite = slice.sprite;
+            if (sprite && this.player.x + this.player.width / 2 > sprite.x && this.player.x + this.player.width / 2 < sprite.x + sprite.width) {
+                if (slice.type === 'gap') {
+                    this.player.isFalling = true;
+                    
+                }
+                if (this.player.isJumping) {
+                    if (this.player.y > sprite.y - this.player.jumpTreshold + this.player.height) {
+                        this.player.vy = -10;
                     }
-                } else {
-                    if (this.player.y > sprite.y - ) {
+                    if (this.player.y <= sprite.y - this.player.jumpTreshold + this.player.height) {
+                        this.player.isJumping = false;
+                        this.player.isFalling = true;
+                        this.player.vy = 5 + this.gravity;
+                    }
+                } else if (this.player.isFalling) {
+                    if (this.player.y < sprite.y - 15) {
+                        this.player.vy = 15;
+                    }
+                    if (this.player.y >= sprite.y - 15) {
                         this.player.vy = 0;
                         this.player.y = sprite.y;
                         this.player.isFalling = false;
-                    } else {
-                        this.player.isFalling = true;
-                        this.player.vy = 5 + this.gravity;
+                        this.player.isOnGround = true;
                     }
                 }
             }
+        }
+
+        if (this.player.isJumping || this.player.isFalling) {
+            this.player.gotoAndStop(2);
         }
 
         this.player.x += this.player.vx;

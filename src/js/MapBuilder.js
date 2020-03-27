@@ -1,16 +1,15 @@
 export default class MapBuilder {
     constructor(ground) {
         this.ground = ground;
-        this.groundHeights = [230, 180];
+        this.groundHeights = [170, 120, 0];
         this.createMap();
     }
     createMap() {
-        this.createGroundSpan(0, 2);
-        this.createGap(1);
-        this.createGroundSpan(1, 4);
+        this.createGroundSpan(1, 2);
+        this.createGroundSpan(0, 4);
         this.createGap(1);
         this.createGroundSpan(0, 4);
-        this.createGap(2);
+        this.createGap(1);
         this.createGroundSpan(1, 2);
         this.createGap(1);
         this.createGroundSpan(0, 4);
@@ -18,8 +17,9 @@ export default class MapBuilder {
         this.ground.addNewSlices();
     }
     createGap(spanLength) {
+        let y = this.groundHeights[2];
         for (let i = 0; i < spanLength; i++) {
-            this.ground.addSlice(this.ground.sliceTypes[1], this.ground.scroller.game.h);
+            this.ground.addSlice(this.ground.sliceTypes[1], y);
         }
     }
     createGroundSpan(heightIndex, spanLength) {

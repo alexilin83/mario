@@ -10,9 +10,8 @@ export default class Player extends PIXI.AnimatedSprite {
         this.position.y = 0;
         this.vx = 0;
         this.vy = 0;
+        this.speed = 5;
         this.isJumping = false;
-        this.isFalling = false;
-        this.isOnGround = true;
-        this.jumpTreshold = 300;
+        this.isOnGround = false;
     }
 }

@@ -6,7 +6,8 @@ export default class Game {
     constructor() {
         this.w = window.innerWidth;
         this.h = window.innerHeight;
-        this.gravity = 3;
+        this.gravity = 0.3;
+        this.friction = 0.8;
 
         this.app = null;
         this.loader = PIXI.Loader.shared;
@@ -36,7 +37,6 @@ export default class Game {
             .add("ground", "images/ground.json")
             .add("player", "images/player.json")
             .load(this.setup);
-
     }
     setup(loader, resources) {
         console.log('loaded');
@@ -45,17 +45,16 @@ export default class Game {
 
         this.player = new Player(this);
         this.app.stage.addChild(this.player);
-        this.player.y = this.scroller.ground.slices[0].sprite.y;
+        this.player.y = this.scroller.ground.slices[0].sprite.y - this.player.height;
 
-        this.space.press = () => {
-            if (this.player.isOnGround) {
-                this.player.isJumping = true;
-                this.player.isOnGround = false;
-            }
+        this.left.press = () => {
+            this.player.anchor.set(1, 0);
+            this.player.transform.scale.x = -1;
         }
-        this.space.release = () => {
-            this.player.isJumping = false;
-            this.player.isFalling = true;
+
+        this.right.press = () => {
+            this.player.anchor.set(0, 0);
+            this.player.transform.scale.x = 1;
         }
 
         this.app.ticker.add(delta => this.update(delta));
@@ -71,73 +70,74 @@ export default class Game {
     }
     update() {
         if (this.left.isDown) {
-            if (this.player.x > 35) {
-                this.player.vx = -5;
-            } else {
-                this.player.vx = 0;
-            }
-            if (this.player.transform.scale.x == 1) {
-                this.player.x += 30;
-                this.player.transform.scale.x = -1;
+            if (this.player.vx > -this.player.speed) {
+                this.player.vx--;
             }
         }
         if (this.right.isDown) {
-            if (this.player.transform.scale.x == -1) {
-                this.player.x -= 30;
-                this.player.transform.scale.x = 1;
-            }
-            if (this.player.x > this.w / 2 + 100) {
-                this.scroller.moveViewportXBy(5);
-                this.player.vx = 0;
-            } else {
-                this.player.vx = 5;
+            if (this.player.vx < this.player.speed) {
+                this.player.vx++;
             }
         }
-        if (!this.left.isDown && !this.right.isDown) {
-            this.player.vx = 0;
-            this.player.gotoAndStop(0);
-        } else {
-            this.player.play();
-        }
-
-        for (let i = 0, l = this.scroller.ground.slices.length - 1; i < l; i++) {
-            let slice = this.scroller.ground.slices[i];
-            let sprite = slice.sprite;
-            if (sprite && this.player.x + this.player.width / 2 > sprite.x && this.player.x + this.player.width / 2 < sprite.x + sprite.width) {
-                if (slice.type === 'gap') {
-                    this.player.isFalling = true;
-                    
-                }
-                if (this.player.isJumping) {
-                    if (this.player.y > sprite.y - this.player.jumpTreshold + this.player.height) {
-                        this.player.vy = -10;
-                    }
-                    if (this.player.y <= sprite.y - this.player.jumpTreshold + this.player.height) {
-                        this.player.isJumping = false;
-                        this.player.isFalling = true;
-                        this.player.vy = 5 + this.gravity;
-                    }
-                } else if (this.player.isFalling) {
-                    if (this.player.y < sprite.y - 15) {
-                        this.player.vy = 15;
-                    }
-                    if (this.player.y >= sprite.y - 15) {
-                        this.player.vy = 0;
-                        this.player.y = sprite.y;
-                        this.player.isFalling = false;
-                        this.player.isOnGround = true;
-                    }
-                }
+        if (this.space.isDown) {
+            if (!this.player.isJumping && this.player.isOnGround) {
+                this.player.isJumping = true;
+                this.player.isOnGround = false;
+                this.player.vy = -this.player.speed * 2.1;
             }
         }
 
         if (this.player.isJumping || this.player.isFalling) {
             this.player.gotoAndStop(2);
+        } else if (this.left.isDown || this.right.isDown) {
+            this.player.play();
+        } else {
+            this.player.gotoAndStop(0);
+        }
+
+        this.player.vx *= this.friction;
+        this.player.vy += this.gravity;
+
+        this.player.isOnGround = false;
+        // this.player.isFalling = true;
+
+        for (let i = 0, l = this.scroller.ground.slices.length - 1; i < l; i++) {
+            let slice = this.scroller.ground.slices[i];
+            let sprite = slice.sprite;
+
+            if (sprite) {
+                let dir = this.checkCollide(this.player, sprite);
+                if (dir) {
+                    if (dir === 'left' || dir === 'right') {
+                        this.player.vx = 0;
+                    } else if (dir === 'down') {
+                        this.player.isOnGround = true;
+                        this.player.isJumping = false;
+                        this.player.isFalling = false;
+                    } else if (dir === 'up') {
+                        this.player.vy *= -1;
+                    }
+                }
+            }
+        }
+
+        if (this.player.isOnGround) {
+            this.player.vy = 0;
         }
 
         this.player.x += this.player.vx;
         this.player.y += this.player.vy;
 
+        if (this.player.x < 0) {
+            this.player.x = 0;
+        }
+        if (this.player.x > this.w - this.player.width) {
+            this.player.x = this.w - this.player.width;
+        }
+        if ((this.player.x > this.w / 2 + 100) && !this.scroller.ground.slices[this.scroller.ground.slices.length - 1].sprite) {
+            this.scroller.moveViewportXBy(5);
+            this.player.x = this.w / 2 + 99;
+        }
     }
     keyboard(value) {
         let key = {};
@@ -177,37 +177,49 @@ export default class Game {
     
         return key;
     }
-    hitTestRectangle(r1, r2) {
-        let hit, combineHalfWidths, combineHalfHeights, vx, vy;
-
-        hit = false;
+    checkCollide(r1, r2) {
+        let halfWidths,
+            halfHeights,
+            vx,
+            vy,
+            ox,
+            oy,
+            collideDir = null;
 
         r1.halfWidth = r1.width / 2;
-        r1.halfHeight = r1.height / 2;
         r2.halfWidth = r2.width / 2;
+        r1.halfHeight = r1.height / 2;
         r2.halfHeight = r2.height / 2;
 
-        r1.centerX = r1.x + r1.halfWidth;
-        r1.centerY = r1.y + r1.halfHeight;
-        r2.centerX = r2.x + r2.halfWidth;
-        r2.centerY = r2.y + r2.halfHeight;
+        vx = r1.x + r1.halfWidth - (r2.x + r2.halfWidth);
+        vy = r1.y + r1.halfHeight - (r2.y + r2.halfHeight);
 
-        vx = r1.centerX - r2.centerX;
-        vy = r1.centerY - r2.centerY;
+        halfWidths = r1.halfWidth + r2.halfWidth;
+        halfHeights = r1.halfHeight + r2.halfHeight;
 
-        combineHalfWidths = r1.halfWidth + r2.halfWidth;
-        combineHalfHeights = r1.halfHeight + r2.halfHeight;
-
-        if (Math.abs(vx) < combineHalfWidths) {
-            if (Math.abs(vy) < combineHalfHeights) {
-                hit = true;
+        if (Math.abs(vx) < halfWidths && Math.abs(vy) < halfHeights) {
+            ox = halfWidths - Math.abs(vx);
+            oy = halfHeights - Math.abs(vy);
+            if (ox >= oy) {
+                if (vy > 0) {
+                    collideDir = 'up';
+                    r1.y += oy;
+                } else {
+                    collideDir = 'down';
+                    r1.y -= oy;
+                }
             } else {
-                hit = false;
+                if (vx > 0) {
+                    collideDir = 'left';
+                    r1.x += ox;
+                    
+                } else {
+                    collideDir = 'right';
+                    r1.x -= ox;
+                }
             }
-        } else {
-            hit = false;
         }
 
-        return hit;
+        return collideDir;
     }
 }

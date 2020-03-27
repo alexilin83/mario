@@ -1,4 +1,3 @@
-import * as PIXI from 'pixi.js';
 import Sky from './Sky';
 import Ground from './Ground';
 import MapBuilder from './MapBuilder';

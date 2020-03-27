@@ -17,8 +17,6 @@ export default class Ground extends PIXI.Container {
         this.viewportX = 0;
         this.viewportSliceX = 0;
         this.viewportNumSlices = Math.ceil(scroller.game.w / this.sliceWidth) + 1;
-        console.log(this.slices);
-        
     }
     setViewportX(viewportX) {
         this.viewportX = this.checkViewportXBounds(viewportX);
@@ -37,6 +35,7 @@ export default class Ground extends PIXI.Container {
             viewportX = maxViewportX;
         }
         return viewportX;
+        
     }
     addSlice(sliceType, y) {
         let slice = new GroundSlice(sliceType, y);
@@ -59,7 +58,8 @@ export default class Ground extends PIXI.Container {
                 slice.sprite.position.y = this.scroller.game.h - slice.y;
 
                 this.addChild(slice.sprite);
-            } else if (slice.sprite != null) {
+            }
+             else if (slice.sprite != null) {
                 slice.sprite.position.x = firstX + (sliceIndex * this.sliceWidth);
             }
         }

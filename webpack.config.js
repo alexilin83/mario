@@ -1,5 +1,6 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const CopyPlugin = require('copy-webpack-plugin');
 
 module.exports = env => {
     let mode = env.mode;
@@ -23,16 +24,24 @@ module.exports = env => {
                 },
                 {
                     test: /\.(png|svg|jpg|gif)$/,
-                    use: [
-                        'file-loader'
-                    ]
+                    use: {
+                        loader: 'file-loader',
+                        options: {
+							outputPath: 'images',
+							name: '[name].[ext]',
+							esModule: false
+						}
+                    }
                 }
             ]
         },
         plugins: [
             new HtmlWebpackPlugin({
                 template: './src/index.html'
-            })
+            }),
+            new CopyPlugin([
+                { from: 'src/images/', to: 'images/' },
+            ])
         ]
     }
 }

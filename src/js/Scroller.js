@@ -1,6 +1,5 @@
 import Sky from './Sky';
 import Ground from './Ground';
-import MapBuilder from './MapBuilder';
 
 export default class Scroller {
     constructor(game) {
@@ -12,8 +11,6 @@ export default class Scroller {
 
         this.ground = new Ground(this);
         this.game.app.stage.addChild(this.ground);
-
-        this.mapBuilder = new MapBuilder(this.ground);
     }
     setViewportX(viewportX) {
         this.viewportX = viewportX;

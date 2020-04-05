@@ -1,6 +1,7 @@
 import * as PIXI from 'pixi.js';
 import Scroller from './Scroller';
 import Player from './Player';
+import Enemy from './Enemy';
 
 export default class Game {
     constructor() {
@@ -15,6 +16,9 @@ export default class Game {
         this.scroller = null;
 
         this.player = null;
+
+        this.enemies = [];
+        this.enemiesAmount = 2;
 
         this.left = this.keyboard("ArrowLeft"),
         this.right = this.keyboard("ArrowRight");
@@ -36,6 +40,7 @@ export default class Game {
             .add("sky", "images/sky.png")
             .add("ground", "images/ground.json")
             .add("player", "images/player.json")
+            .add("enemy", "images/enemy.json")
             .load(this.setup);
     }
     setup(loader, resources) {
@@ -46,6 +51,17 @@ export default class Game {
         this.player = new Player(this);
         this.app.stage.addChild(this.player);
         this.player.y = this.scroller.ground.slices[0].sprite.y - this.player.height;
+
+        for (let i = 0; i < this.enemiesAmount; i++) {
+            let enemy = new Enemy(this.scroller.game);
+            this.enemies.push(enemy);
+            this.app.stage.addChild(enemy);
+            enemy.play();
+
+            let randomGround = this.scroller.ground.slices[Math.floor(Math.random() * 6) + 3];
+            enemy.x = randomGround.sprite.x;
+            enemy.y = randomGround.sprite.y - enemy.height;
+        }
 
         this.left.press = () => {
             this.player.anchor.set(1, 0);
@@ -87,7 +103,7 @@ export default class Game {
             }
         }
 
-        if (this.player.isJumping || this.player.isFalling) {
+        if (this.player.isJumping) {
             this.player.gotoAndStop(2);
         } else if (this.left.isDown || this.right.isDown) {
             this.player.play();
@@ -99,27 +115,61 @@ export default class Game {
         this.player.vy += this.gravity;
 
         this.player.isOnGround = false;
-        // this.player.isFalling = true;
 
-        for (let i = 0, l = this.scroller.ground.slices.length - 1; i < l; i++) {
-            let slice = this.scroller.ground.slices[i];
+        this.enemies.forEach((enemy) => {
+            enemy.vx = -enemy.speed;
+            enemy.vy += this.gravity;
+
+            enemy.isOnGround = false;
+
+            let dir = this.checkCollide(this.player, enemy);
+            if (dir) {
+                if (dir === 'left' || dir === 'right' || dir === 'up') {
+                    this.player.isHitted = true;
+                    console.log('killed');
+                    
+                } else if (dir === 'down') {
+                    this.player.vy = -this.player.speed * 1.1;
+                }
+            }
+        });
+
+        this.scroller.ground.slices.forEach((slice) => {
             let sprite = slice.sprite;
 
             if (sprite) {
-                let dir = this.checkCollide(this.player, sprite);
-                if (dir) {
-                    if (dir === 'left' || dir === 'right') {
+                let collideDirPlayer = this.checkCollide(this.player, sprite);
+                if (collideDirPlayer) {
+                    if (collideDirPlayer === 'left' || collideDirPlayer === 'right') {
                         this.player.vx = 0;
-                    } else if (dir === 'down') {
+                    } else if (collideDirPlayer === 'down') {
                         this.player.isOnGround = true;
                         this.player.isJumping = false;
-                        this.player.isFalling = false;
-                    } else if (dir === 'up') {
+                    } else if (collideDirPlayer === 'up') {
                         this.player.vy *= -1;
                     }
                 }
+                this.enemies.forEach((enemy) => {
+                    let collideDirEnemy = this.checkCollide(enemy, sprite);
+                    if (collideDirEnemy) {
+                        if (collideDirEnemy === 'left' || collideDirEnemy === 'right') {
+                            enemy.vx = 0;
+                        } else if (collideDirEnemy === 'down') {
+                            enemy.isOnGround = true;
+                        }
+                    }
+                });
             }
-        }
+        });
+
+        this.enemies.forEach((enemy) => {
+            if (enemy.isOnGround) {
+                enemy.vy = 0;
+            }
+
+            enemy.x += enemy.vx;
+            enemy.y += enemy.vy;
+        });
 
         if (this.player.isOnGround) {
             this.player.vy = 0;
@@ -137,6 +187,10 @@ export default class Game {
         if ((this.player.x > this.w / 2 + 100) && !this.scroller.ground.slices[this.scroller.ground.slices.length - 1].sprite) {
             this.scroller.moveViewportXBy(5);
             this.player.x = this.w / 2 + 99;
+
+            this.enemies.forEach((enemy) => {
+                enemy.speed = 6;
+            });
         }
     }
     keyboard(value) {

@@ -1,6 +1,13 @@
 import * as PIXI from 'pixi.js';
 import GroundSpritesPool from './GroundSpritesPool';
-import GroundSlice from './GroundSlice';
+
+class GroundSlice {
+    constructor(type, y) {
+        this.type = type;
+        this.y = y;
+        this.sprite = null;
+    }   
+}
 
 export default class Ground extends PIXI.Container {
     constructor(scroller) {
@@ -14,9 +21,13 @@ export default class Ground extends PIXI.Container {
 
         this.sliceWidth = 220;
 
+        this.groundHeights = [170, 120, 0];
+
         this.viewportX = 0;
         this.viewportSliceX = 0;
         this.viewportNumSlices = Math.ceil(scroller.game.w / this.sliceWidth) + 1;
+
+        this.createGround();
     }
     setViewportX(viewportX) {
         this.viewportX = this.checkViewportXBounds(viewportX);
@@ -83,5 +94,33 @@ export default class Ground extends PIXI.Container {
     }
     returnGroundSprite(sliceSprite) {
         return this.pool.returnGround(sliceSprite);
+    }
+
+    createGround() {
+        this.createGroundSpan(1, 2);
+        this.createGroundSpan(0, 4);
+        this.createGap(1);
+        this.createGroundSpan(0, 4);
+        this.createGap(1);
+        this.createGroundSpan(1, 2);
+        this.createGap(1);
+        this.createGroundSpan(0, 4);
+
+        this.addNewSlices();
+    }
+    createGap(spanLength) {
+        let y = this.groundHeights[2];
+        for (let i = 0; i < spanLength; i++) {
+            this.addSlice(this.sliceTypes[1], y);
+        }
+    }
+    createGroundSpan(heightIndex, spanLength) {
+        this.addGround(heightIndex, spanLength);
+    }
+    addGround(heightIndex, spanLength) {
+        let y = this.groundHeights[heightIndex];
+        for (let i = 0; i < spanLength; i++) {
+            this.addSlice(this.sliceTypes[0], y);
+        }
     }
 }

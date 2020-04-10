@@ -1,8 +1,8 @@
-import * as PIXI from 'pixi.js';
+import { Sprite } from 'pixi.js';
 
 export default class GroundSpritesPool {
-    constructor(scroller) {
-        this.scroller = scroller;
+    constructor(game) {
+        this.game = game;
         this.ground = [];
         this.createGround();
     }
@@ -11,11 +11,11 @@ export default class GroundSpritesPool {
         this.addGroundSprites(4, 'ground2.png');
         this.addGroundSprites(4, 'ground3.png');
         this.addGroundSprites(4, 'ground4.png');
-        this.scroller.game.shuffle(this.ground);
+        this.game.shuffle(this.ground);
     }
     addGroundSprites(amount, frameId) {
         for (let i = 0; i < amount; i++) {
-            let sprite = new PIXI.Sprite(this.scroller.game.loader.resources.ground.textures[frameId]);
+            let sprite = new Sprite(this.game.loader.resources.ground.textures[frameId]);
             this.ground.push(sprite);
         }
     }

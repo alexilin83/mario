@@ -1,6 +1,6 @@
-import * as PIXI from 'pixi.js';
+import { AnimatedSprite } from 'pixi.js';
 
-export default class Player extends PIXI.AnimatedSprite {
+export default class Player extends AnimatedSprite {
     constructor(game) {
         let sheet = game.loader.resources.player.spritesheet;
         super(sheet.animations['walk']);
@@ -13,5 +13,6 @@ export default class Player extends PIXI.AnimatedSprite {
         this.speed = 5;
         this.isJumping = false;
         this.isOnGround = false;
+        this.isHitted = false;
     }
 }

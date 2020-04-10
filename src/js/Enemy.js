@@ -1,10 +1,9 @@
-import * as PIXI from 'pixi.js';
+import { AnimatedSprite } from 'pixi.js';
 
-export default class Enemy extends PIXI.AnimatedSprite {
+export default class Enemy extends AnimatedSprite {
     constructor(game) {
         let sheet = game.loader.resources.enemy.spritesheet;
         super(sheet.animations['walk']);
-        this.game = game;
         this.animationSpeed = 0.2;
         this.position.x = 0;
         this.position.y = 0;
@@ -12,5 +11,6 @@ export default class Enemy extends PIXI.AnimatedSprite {
         this.vy = 0;
         this.speed = 1;
         this.isOnGround = false;
+        this.isHitted = false;
     }
 }

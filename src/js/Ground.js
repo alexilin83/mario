@@ -1,4 +1,4 @@
-import * as PIXI from 'pixi.js';
+import { Container, Sprite } from 'pixi.js';
 import GroundSpritesPool from './GroundSpritesPool';
 
 class GroundSlice {
@@ -9,12 +9,12 @@ class GroundSlice {
     }   
 }
 
-export default class Ground extends PIXI.Container {
-    constructor(scroller) {
+export default class Ground extends Container {
+    constructor(game) {
         super();
 
-        this.scroller = scroller;
-        this.pool = new GroundSpritesPool(scroller);
+        this.game = game;
+        this.pool = new GroundSpritesPool(this.game);
 
         this.slices = [];
         this.sliceTypes = ['grass', 'gap'];
@@ -25,7 +25,7 @@ export default class Ground extends PIXI.Container {
 
         this.viewportX = 0;
         this.viewportSliceX = 0;
-        this.viewportNumSlices = Math.ceil(scroller.game.w / this.sliceWidth) + 1;
+        this.viewportNumSlices = Math.ceil(this.game.w / this.sliceWidth) + 1;
 
         this.createGround();
     }
@@ -61,12 +61,12 @@ export default class Ground extends PIXI.Container {
                 if (slice.type != this.sliceTypes[1]) {
                     slice.sprite = this.borrowGroundSprite();
                 } else {
-                    slice.sprite = new PIXI.Sprite(this.scroller.game.loader.resources.ground.textures['ground1.png']);
+                    slice.sprite = new Sprite(this.game.loader.resources.ground.textures['ground1.png']);
                     slice.sprite.alpha = 0;
                 }
 
                 slice.sprite.position.x = firstX + (sliceIndex * this.sliceWidth);
-                slice.sprite.position.y = this.scroller.game.h - slice.y;
+                slice.sprite.position.y = this.game.h - slice.y;
 
                 this.addChild(slice.sprite);
             }

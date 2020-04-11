@@ -21,17 +21,6 @@ module.exports = env => {
                         'style-loader',
                         'css-loader'
                     ]
-                },
-                {
-                    test: /\.(png|svg|jpg|gif)$/,
-                    use: {
-                        loader: 'file-loader',
-                        options: {
-							outputPath: 'images',
-							name: '[name].[ext]',
-							esModule: false
-						}
-                    }
                 }
             ]
         },
@@ -41,6 +30,7 @@ module.exports = env => {
             }),
             new CopyPlugin([
                 { from: 'src/images/', to: 'images/' },
+                { from: 'src/sound/', to: 'sound/' },
             ])
         ]
     }

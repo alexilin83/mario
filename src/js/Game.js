@@ -1,4 +1,4 @@
-import { Application, Loader } from 'pixi.js';
+import { Application, Loader, Container, Text, TextStyle } from 'pixi.js';
 import Sky from './Sky';
 import Ground from './Ground';
 import Objects from './Objects';
@@ -12,9 +12,13 @@ export default class Game {
         this.friction = 0.8;
         this.viewportX = 0;
 
+        this.state = this.play;
+
         this.app = null;
         this.loader = Loader.shared;
 
+        this.gameScene = new Container();
+        this.gameOverScene = new Container();
         this.sky = null;
         this.ground = null;
         this.objects = null;
@@ -25,6 +29,20 @@ export default class Game {
         this.space = this.keyboard(" ");
 
         this.setup = this.setup.bind(this);
+
+        this.textStyle = new TextStyle({
+            fontFamily: "Arial",
+            fontSize: 36,
+            fill: "white",
+            stroke: '#ff3300',
+            strokeThickness: 4,
+            dropShadow: true,
+            dropShadowColor: "#000000",
+            dropShadowBlur: 4,
+            dropShadowAngle: Math.PI / 6,
+            dropShadowDistance: 6,
+        });
+        this.message = new Text('', this.textStyle);
 
     }
     init() {
@@ -42,23 +60,31 @@ export default class Game {
             .add("ground", "images/ground.json")
             .add("player", "images/player.json")
             .add("enemy", "images/enemy.json")
+            .add("main", "sound/main.mp3")
+            .add("jump", "sound/jump.wav")
+            .add("kick", "sound/kick.wav")
             .load(this.setup);
     }
     setup(loader, resources) {
         console.log('loaded');
 
+        this.app.stage.addChild(this.gameScene);
+        this.app.stage.addChild(this.gameOverScene);
+
         this.sky = new Sky(this);
-        this.app.stage.addChild(this.sky);
+        this.gameScene.addChild(this.sky);
 
         this.ground = new Ground(this);
-        this.app.stage.addChild(this.ground);
+        this.gameScene.addChild(this.ground);
 
         this.objects = new Objects(this);
-        this.app.stage.addChild(this.objects);
+        this.gameScene.addChild(this.objects);
 
         this.player = new Player(this);
-        this.app.stage.addChild(this.player);
+        this.gameScene.addChild(this.player);
         this.player.y = this.ground.slices[0].sprite.y - this.player.height;
+
+        // resources.main.sound.play();
 
         this.left.press = () => {
             this.player.anchor.set(1, 0);
@@ -70,7 +96,13 @@ export default class Game {
             this.player.transform.scale.x = 1;
         }
 
-        this.app.ticker.add(delta => this.update(delta));
+        this.gameOverScene.visible = false;
+        this.gameOverScene.addChild(this.message);
+
+        this.message.x = (this.w / 2) - (this.message.width / 2);
+        this.message.y = (this.h / 2) - (this.message.height / 2);
+
+        this.app.ticker.add(delta => this.gameLoop(delta));
     }
     shuffle (array) {
         let len = array.length;
@@ -81,7 +113,10 @@ export default class Game {
             array.splice(pos, 0, groundSlice);
         }
     }
-    update() {
+    gameLoop(delta) {
+        this.state(delta);
+    }
+    play() {
         if (!this.player.isHitted) {
             if (this.left.isDown) {
                 if (this.player.vx > -this.player.speed) {
@@ -175,9 +210,22 @@ export default class Game {
             this.objects.setViewportX(this.viewportX);
             this.player.x = this.w / 2 + 99;
         }
+        if (this.player.y > this.h) {
+            this.message.text = 'You die!';
+            this.state = this.end;
+        }
+
+        if (!this.objects.enemies.length) {
+            this.message.text = 'You won!';
+            this.state = this.end;
+        }
 
         this.sky.update();
         this.objects.update();
+    }
+    end() {
+        this.gameScene.visible = false;
+        this.gameOverScene.visible = true;
     }
     keyboard(value) {
         let key = {};

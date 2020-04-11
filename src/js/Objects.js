@@ -73,7 +73,7 @@ export default class Objects extends Container {
     removeEnemies() {
         let enemies = this.enemies.filter(enemy => {
             let position = enemy.getGlobalPosition();
-            if ((position.x > 0 - enemy.width) && !enemy.isHitted) {
+            if ((position.x > 0 - enemy.width) && (position.y < this.game.h) && !enemy.isHitted) {
                 return true;
             } else {
                 setTimeout(() => {

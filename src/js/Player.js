@@ -13,6 +13,6 @@ export default class Player extends AnimatedSprite {
         this.speed = 5;
         this.isJumping = false;
         this.isOnGround = false;
-        this.isHitted = false;
+        this.isDead = false;
     }
 }

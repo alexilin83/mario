@@ -117,7 +117,7 @@ export default class Game {
         this.state(delta);
     }
     play() {
-        if (!this.player.isHitted) {
+        if (!this.player.isDead) {
             if (this.left.isDown) {
                 if (this.player.vx > -this.player.speed) {
                     this.player.vx--;
@@ -137,7 +137,7 @@ export default class Game {
             }
         }
 
-        if (this.player.isHitted) {
+        if (this.player.isDead) {
             this.player.textures = this.loader.resources.player.spritesheet.animations['death'];
         } else if (this.player.isJumping) {
             this.player.gotoAndStop(3);
@@ -155,7 +155,7 @@ export default class Game {
         this.player.vx *= this.friction;
         this.player.vy += this.gravity;
 
-        if (!this.player.isHitted) {
+        if (!this.player.isDead) {
             this.player.isOnGround = false;
     
             this.ground.slices.forEach((slice) => {
@@ -181,7 +181,7 @@ export default class Game {
                 if (dir) {
                     if (dir === 'left' || dir === 'right' || dir === 'up') {
                         this.player.vy = -this.player.speed * 1.1;
-                        this.player.isHitted = true;
+                        this.player.isDead = true;
                     } else if (dir === 'down') {
                         this.player.vy = -this.player.speed * 1.1;
                         enemy.isHitted = true;
@@ -210,6 +210,7 @@ export default class Game {
             this.objects.setViewportX(this.viewportX);
             this.player.x = this.w / 2 + 99;
         }
+
         if (this.player.y > this.h) {
             this.message.text = 'You die!';
             this.state = this.end;

@@ -66,7 +66,7 @@ export default class Ground extends Container {
                 }
 
                 slice.sprite.position.x = firstX + (sliceIndex * this.sliceWidth);
-                slice.sprite.position.y = this.game.h - slice.y;
+                slice.sprite.position.y = slice.y ? this.game.h - slice.y : this.game.h + 300;
 
                 this.addChild(slice.sprite);
             }

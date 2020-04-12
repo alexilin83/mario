@@ -1,4 +1,5 @@
 import { Application, Loader, Container, Text, TextStyle } from 'pixi.js';
+import 'pixi-sound';
 import Sky from './Sky';
 import Ground from './Ground';
 import Objects from './Objects';
@@ -84,7 +85,8 @@ export default class Game {
         this.gameScene.addChild(this.player);
         this.player.y = this.ground.slices[0].sprite.y - this.player.height;
 
-        // resources.main.sound.play();
+        resources.main.sound.volume = 0.5;
+        resources.main.sound.play();
 
         this.left.press = () => {
             this.player.anchor.set(1, 0);
@@ -133,6 +135,8 @@ export default class Game {
                     this.player.isJumping = true;
                     this.player.isOnGround = false;
                     this.player.vy = -this.player.speed * 2.1;
+
+                    this.loader.resources.jump.sound.play();
                 }
             }
         }
@@ -185,6 +189,8 @@ export default class Game {
                     } else if (dir === 'down') {
                         this.player.vy = -this.player.speed * 1.1;
                         enemy.isHitted = true;
+                        
+                        this.loader.resources.kick.sound.play();
                     }
                 }
             });
@@ -213,11 +219,6 @@ export default class Game {
 
         if (this.player.y > this.h) {
             this.message.text = 'You die!';
-            this.state = this.end;
-        }
-
-        if (!this.objects.enemies.length) {
-            this.message.text = 'You won!';
             this.state = this.end;
         }
 

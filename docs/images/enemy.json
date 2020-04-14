@@ -2,19 +2,19 @@
 
 "enemy_1.png":
 {
-	"frame": {"x":0,"y":0,"w":42,"h":38},
+	"frame": {"x":0,"y":0,"w":34,"h":32},
 	"rotated": false,
 	"trimmed": false,
-	"spriteSourceSize": {"x":0,"y":0,"w":42,"h":38},
-	"sourceSize": {"w":42,"h":38}
+	"spriteSourceSize": {"x":0,"y":0,"w":34,"h":32},
+	"sourceSize": {"w":34,"h":32}
 },
 "enemy_2.png":
 {
-	"frame": {"x":42,"y":0,"w":42,"h":38},
+	"frame": {"x":34,"y":0,"w":34,"h":32},
 	"rotated": false,
 	"trimmed": false,
-	"spriteSourceSize": {"x":0,"y":0,"w":42,"h":38},
-	"sourceSize": {"w":42,"h":38}
+	"spriteSourceSize": {"x":0,"y":0,"w":34,"h":32},
+	"sourceSize": {"w":34,"h":32}
 }},
 "animations": {
 	"walk": ["enemy_1.png","enemy_2.png"]
@@ -24,8 +24,8 @@
 	"version": "1.0",
 	"image": "enemy.png",
 	"format": "RGBA8888",
-	"size": {"w":84,"h":38},
+	"size": {"w":68,"h":32},
 	"scale": "1",
-	"smartupdate": "$TexturePacker:SmartUpdate:dbaf2bc7e5f9345a944d1e222825b826:2a52d4a5ee550f594f1d236458a8f310:a99356c10d69482e9bee53d25c3d05e1$"
+	"smartupdate": "$TexturePacker:SmartUpdate:47b1af08971bff6c261ffb43ef66b53b:57fa2acc93d77779a81511bbe3465a78:a99356c10d69482e9bee53d25c3d05e1$"
 }
 }

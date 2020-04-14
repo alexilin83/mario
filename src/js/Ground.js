@@ -105,6 +105,11 @@ export default class Ground extends Container {
         this.createGroundSpan(1, 2);
         this.createGap(1);
         this.createGroundSpan(0, 4);
+        this.createGroundSpan(1, 6);
+        this.createGap(1);
+        this.createGroundSpan(1, 4);
+        this.createGroundSpan(0, 4);
+        this.createGap(1);
 
         this.addNewSlices();
     }

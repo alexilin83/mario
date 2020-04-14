@@ -4,7 +4,6 @@ export default class Player extends AnimatedSprite {
     constructor(game) {
         let sheet = game.loader.resources.player.spritesheet;
         super(sheet.animations['walk']);
-        this.game = game;
         this.animationSpeed = 0.2;
         this.position.x = 0;
         this.position.y = 0;

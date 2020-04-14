@@ -10,26 +10,28 @@ export default class Objects extends Container {
         this.viewportX = 0;
 
         this.enemies = [];
-        this.enemiesAmount = 5;
+        this.enemiesAmount = 10;
 
         for (let i = 0; i < this.enemiesAmount; i++) {
             let enemy = new Enemy(this.game);
             this.enemies.push(enemy);
             this.addChild(enemy);
+            enemy.play();
             
             let index = Math.floor(Math.random() * (this.game.ground.slices.length - 1)) + 1;
             
             let slice = this.game.ground.slices[index];
             enemy.x = index * this.game.ground.sliceWidth;
             enemy.y = this.game.h - (slice.y + enemy.height);
-            enemy.play();
         }
     }
     update() {
         this.enemies.forEach((enemy) => {
             let position = enemy.getGlobalPosition();
 
-            if (enemy.isHitted) {
+            if (enemy.isDead) {
+                enemy.stop();
+                enemy.rotation = 0;
                 enemy.anchor.set(0, -1);
                 enemy.transform.scale.y = 0.5;
             } else {
@@ -73,7 +75,7 @@ export default class Objects extends Container {
     removeEnemies() {
         let enemies = this.enemies.filter(enemy => {
             let position = enemy.getGlobalPosition();
-            if ((position.x > 0 - enemy.width) && (position.y < this.game.h) && !enemy.isHitted) {
+            if ((position.x > 0 - enemy.width) && (position.y < this.game.h) && !enemy.isDead) {
                 return true;
             } else {
                 setTimeout(() => {

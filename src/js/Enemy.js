@@ -11,6 +11,6 @@ export default class Enemy extends AnimatedSprite {
         this.vy = 0;
         this.speed = 1;
         this.isOnGround = false;
-        this.isHitted = false;
+        this.isDead = false;
     }
 }

@@ -7,10 +7,10 @@ export default class GroundSpritesPool {
         this.createGround();
     }
     createGround() {
-        this.addGroundSprites(4, 'ground1.png');
-        this.addGroundSprites(4, 'ground2.png');
-        this.addGroundSprites(4, 'ground3.png');
-        this.addGroundSprites(4, 'ground4.png');
+        this.addGroundSprites(8, 'ground1.png');
+        this.addGroundSprites(8, 'ground2.png');
+        this.addGroundSprites(8, 'ground3.png');
+        this.addGroundSprites(8, 'ground4.png');
         this.game.shuffle(this.ground);
     }
     addGroundSprites(amount, frameId) {

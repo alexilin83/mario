@@ -1,6 +1,8 @@
 import { Application, Loader, Container, Text, TextStyle } from 'pixi.js';
 import 'pixi-sound';
 import Sky from './Sky';
+import Mountains from './Mountains';
+import Trees from './Trees';
 import Ground from './Ground';
 import Objects from './Objects';
 import Player from './Player';
@@ -21,6 +23,8 @@ export default class Game {
         this.gameScene = new Container();
         this.gameOverScene = new Container();
         this.sky = null;
+        this.mountains = null;
+        this.trees = null;
         this.ground = null;
         this.objects = null;
         this.player = null;
@@ -32,16 +36,8 @@ export default class Game {
         this.setup = this.setup.bind(this);
 
         this.textStyle = new TextStyle({
-            fontFamily: "Arial",
-            fontSize: 36,
-            fill: "white",
-            stroke: '#ff3300',
-            strokeThickness: 4,
-            dropShadow: true,
-            dropShadowColor: "#000000",
-            dropShadowBlur: 4,
-            dropShadowAngle: Math.PI / 6,
-            dropShadowDistance: 6,
+            fontSize: 150,
+            fill: "white"
         });
         this.message = new Text('', this.textStyle);
 
@@ -58,6 +54,8 @@ export default class Game {
 
         this.loader
             .add("sky", "images/sky.png")
+            .add("mountains", "images/mountains.png")
+            .add("trees", "images/trees.png")
             .add("ground", "images/ground.json")
             .add("player", "images/player.json")
             .add("enemy", "images/enemy.json")
@@ -74,6 +72,12 @@ export default class Game {
 
         this.sky = new Sky(this);
         this.gameScene.addChild(this.sky);
+
+        this.mountains = new Mountains(this);
+        this.gameScene.addChild(this.mountains);
+
+        this.trees = new Trees(this);
+        this.gameScene.addChild(this.trees);
 
         this.ground = new Ground(this);
         this.gameScene.addChild(this.ground);
@@ -188,8 +192,8 @@ export default class Game {
                         this.player.isDead = true;
                     } else if (dir === 'down') {
                         this.player.vy = -this.player.speed * 1.1;
-                        enemy.isHitted = true;
-                        
+                        enemy.isDead = true;
+
                         this.loader.resources.kick.sound.play();
                     }
                 }
@@ -212,6 +216,8 @@ export default class Game {
         if ((this.player.x > this.w / 2 + 100) && !this.ground.slices[this.ground.slices.length - 1].sprite) {
             this.viewportX += 5;
             this.sky.setViewportX(this.viewportX);
+            this.mountains.setViewportX(this.viewportX);
+            this.trees.setViewportX(this.viewportX);
             this.ground.setViewportX(this.viewportX);
             this.objects.setViewportX(this.viewportX);
             this.player.x = this.w / 2 + 99;

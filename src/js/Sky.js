@@ -16,4 +16,8 @@ export default class Sky extends TilingSprite {
         this.viewportX = newViewportX;
         this.tilePosition.x -= (distanceTravelled * this.deltaX);
     }
+    clearViewportX() {
+        this.viewportX = 0;
+        this.tilePosition.x = 0;
+    }
 }

@@ -22,6 +22,8 @@ export default class Game {
 
         this.gameScene = new Container();
         this.gameOverScene = new Container();
+        this.gameOverScene.visible = false;
+
         this.sky = null;
         this.mountains = null;
         this.trees = null;
@@ -37,9 +39,11 @@ export default class Game {
 
         this.textStyle = new TextStyle({
             fontSize: 150,
-            fill: "white"
+            fill: 'red',
+            align: 'center'
         });
         this.message = new Text('', this.textStyle);
+        this.message.visible = false;
 
     }
     init() {
@@ -59,6 +63,7 @@ export default class Game {
             .add("ground", "images/ground.json")
             .add("player", "images/player.json")
             .add("enemy", "images/enemy.json")
+            .add("dog", "images/dog.json")
             .add("main", "sound/main.mp3")
             .add("jump", "sound/jump.wav")
             .add("kick", "sound/kick.wav")
@@ -70,14 +75,14 @@ export default class Game {
         this.app.stage.addChild(this.gameScene);
         this.app.stage.addChild(this.gameOverScene);
 
-        this.sky = new Sky(this);
-        this.gameScene.addChild(this.sky);
-
         this.mountains = new Mountains(this);
         this.gameScene.addChild(this.mountains);
 
         this.trees = new Trees(this);
         this.gameScene.addChild(this.trees);
+
+        this.sky = new Sky(this);
+        this.gameScene.addChild(this.sky);
 
         this.ground = new Ground(this);
         this.gameScene.addChild(this.ground);
@@ -89,8 +94,10 @@ export default class Game {
         this.gameScene.addChild(this.player);
         this.player.y = this.ground.slices[0].sprite.y - this.player.height;
 
-        resources.main.sound.volume = 0.5;
-        resources.main.sound.play();
+        resources.main.sound.volume = 0.1;
+        resources.main.sound.play({
+            loop: true
+        });
 
         this.left.press = () => {
             this.player.anchor.set(1, 0);
@@ -101,14 +108,40 @@ export default class Game {
             this.player.anchor.set(0, 0);
             this.player.transform.scale.x = 1;
         }
+      
+        this.gameScene.addChild(this.message);
 
-        this.gameOverScene.visible = false;
-        this.gameOverScene.addChild(this.message);
-
-        this.message.x = (this.w / 2) - (this.message.width / 2);
-        this.message.y = (this.h / 2) - (this.message.height / 2);
+        this.message.anchor.set(0.5, 0.5);
+        this.message.x = this.w / 2;
+        this.message.y = this.h / 2;
 
         this.app.ticker.add(delta => this.gameLoop(delta));
+    }
+    reload() {
+        this.viewportX = 0;
+
+        this.sky.clearViewportX();
+        this.mountains.clearViewportX();
+        this.trees.clearViewportX();
+
+        this.ground.destroy({
+            children: true
+        });
+        this.ground = new Ground(this);
+        this.gameScene.addChildAt(this.ground, 4);
+
+        this.objects.destroy({
+            children: true
+        });
+        this.objects = new Objects(this);
+        this.gameScene.addChild(this.objects);
+
+        this.player.textures = this.loader.resources.player.spritesheet.animations['walk'];
+        this.player.isDead = false;
+        this.player.x = 0;
+        this.player.y = this.ground.slices[0].sprite.y - this.player.height;
+
+        this.state = this.play;
     }
     shuffle (array) {
         let len = array.length;
@@ -140,6 +173,7 @@ export default class Game {
                     this.player.isOnGround = false;
                     this.player.vy = -this.player.speed * 2.1;
 
+                    this.loader.resources.jump.sound.volume = 0.5;
                     this.loader.resources.jump.sound.play();
                 }
             }
@@ -223,17 +257,20 @@ export default class Game {
             this.player.x = this.w / 2 + 99;
         }
 
-        if (this.player.y > this.h) {
-            this.message.text = 'You die!';
-            this.state = this.end;
-        }
-
         this.sky.update();
         this.objects.update();
+
+        if (this.player.y > this.h) {
+            this.state = this.pause;
+
+            this.reload();
+
+            this.message.text = 'Looser!';
+            this.blinkObject(this.message, 3);
+        }
     }
-    end() {
-        this.gameScene.visible = false;
-        this.gameOverScene.visible = true;
+    pause() {
+        console.log('pause');
     }
     keyboard(value) {
         let key = {};
@@ -322,5 +359,14 @@ export default class Game {
         }
 
         return collideDir;
+    }
+    blinkObject(obj, count) {
+        let blinkInterval = setInterval(() => {
+            obj.visible = !obj.visible;
+        }, 500);
+        setTimeout(() => {
+            clearInterval(blinkInterval);
+            obj.visible = false;
+        }, count * 1000);
     }
 }

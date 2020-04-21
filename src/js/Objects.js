@@ -1,5 +1,6 @@
 import { Container } from 'pixi.js';
 import Enemy from './Enemy';
+import Dog from './Dog';
 
 export default class Objects extends Container {
     constructor(game) {
@@ -24,6 +25,12 @@ export default class Objects extends Container {
             enemy.x = index * this.game.ground.sliceWidth;
             enemy.y = this.game.h - (slice.y + enemy.height);
         }
+
+        this.dog = new Dog(this.game);
+        this.addChild(this.dog);
+        this.dog.x = (this.game.ground.slices.length - 2) * this.game.ground.sliceWidth;
+        this.dog.y = this.game.h - (this.game.ground.slices[this.game.ground.slices.length - 2].y + this.dog.height);
+        this.dog.play();
     }
     update() {
         this.enemies.forEach((enemy) => {
@@ -31,7 +38,6 @@ export default class Objects extends Container {
 
             if (enemy.isDead) {
                 enemy.stop();
-                enemy.rotation = 0;
                 enemy.anchor.set(0, -1);
                 enemy.transform.scale.y = 0.5;
             } else {

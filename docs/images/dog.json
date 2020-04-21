@@ -1,0 +1,47 @@
+{"frames": {
+
+"dog_1.png":
+{
+	"frame": {"x":0,"y":0,"w":63,"h":66},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":63,"h":66},
+	"sourceSize": {"w":63,"h":66}
+},
+"dog_2.png":
+{
+	"frame": {"x":0,"y":66,"w":63,"h":66},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":63,"h":66},
+	"sourceSize": {"w":63,"h":66}
+},
+"dog_3.png":
+{
+	"frame": {"x":0,"y":132,"w":63,"h":66},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":63,"h":66},
+	"sourceSize": {"w":63,"h":66}
+},
+"dog_4.png":
+{
+	"frame": {"x":0,"y":198,"w":63,"h":66},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":63,"h":66},
+	"sourceSize": {"w":63,"h":66}
+}},
+"animations": {
+	"sit": ["dog_1.png","dog_2.png","dog_3.png","dog_4.png"]
+},
+"meta": {
+	"app": "https://www.codeandweb.com/texturepacker",
+	"version": "1.0",
+	"image": "dog.png",
+	"format": "RGBA8888",
+	"size": {"w":63,"h":198},
+	"scale": "1",
+	"smartupdate": "$TexturePacker:SmartUpdate:671e822a5d02ba2955d448c01dff6fa3:aed6cce7f5dcfaaa5eee4dc5730c2257:ec6c3e0b9eb3cd3c555a7c426f3b0ee8$"
+}
+}

@@ -247,14 +247,9 @@ export default class Game {
         if (this.player.x > this.w - this.player.width) {
             this.player.x = this.w - this.player.width;
         }
-        if ((this.player.x > this.w / 2 + 100) && !this.ground.slices[this.ground.slices.length - 1].sprite) {
-            this.viewportX += 5;
-            this.sky.setViewportX(this.viewportX);
-            this.mountains.setViewportX(this.viewportX);
-            this.trees.setViewportX(this.viewportX);
-            this.ground.setViewportX(this.viewportX);
-            this.objects.setViewportX(this.viewportX);
-            this.player.x = this.w / 2 + 99;
+        if ((this.player.x > this.w / 2) && !this.ground.slices[this.ground.slices.length - 1].sprite) {
+            this.moveViewportX(5);
+            this.player.x = this.w / 2 - 1;
         }
 
         this.sky.update();
@@ -271,6 +266,14 @@ export default class Game {
     }
     pause() {
         console.log('pause');
+    }
+    moveViewportX(value) {
+        this.viewportX += value;
+        this.sky.setViewportX(this.viewportX);
+        this.mountains.setViewportX(this.viewportX);
+        this.trees.setViewportX(this.viewportX);
+        this.ground.setViewportX(this.viewportX);
+        this.objects.setViewportX(this.viewportX);
     }
     keyboard(value) {
         let key = {};

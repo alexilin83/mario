@@ -28,8 +28,8 @@ export default class Objects extends Container {
 
         this.dog = new Dog(this.game);
         this.addChild(this.dog);
-        this.dog.x = (this.game.ground.slices.length - 2) * this.game.ground.sliceWidth;
-        this.dog.y = this.game.h - (this.game.ground.slices[this.game.ground.slices.length - 2].y + this.dog.height);
+        this.dog.x = (this.game.ground.slices.length - 3) * this.game.ground.sliceWidth;
+        this.dog.y = this.game.h - (this.game.ground.slices[this.game.ground.slices.length - 3].y + this.dog.height);
         this.dog.play();
     }
     update() {

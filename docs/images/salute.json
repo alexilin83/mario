@@ -1,0 +1,87 @@
+{"frames": {
+
+"salute_1.png":
+{
+	"frame": {"x":0,"y":0,"w":500,"h":513},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":500,"h":513},
+	"sourceSize": {"w":500,"h":513}
+},
+"salute_2.png":
+{
+	"frame": {"x":500,"y":0,"w":500,"h":513},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":500,"h":513},
+	"sourceSize": {"w":500,"h":513}
+},
+"salute_3.png":
+{
+	"frame": {"x":1000,"y":0,"w":500,"h":513},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":500,"h":513},
+	"sourceSize": {"w":500,"h":513}
+},
+"salute_4.png":
+{
+	"frame": {"x":1500,"y":0,"w":500,"h":513},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":500,"h":513},
+	"sourceSize": {"w":500,"h":513}
+},
+"salute_5.png":
+{
+	"frame": {"x":2000,"y":0,"w":500,"h":513},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":500,"h":513},
+	"sourceSize": {"w":500,"h":513}
+},
+"salute_6.png":
+{
+	"frame": {"x":2500,"y":0,"w":500,"h":513},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":500,"h":513},
+	"sourceSize": {"w":500,"h":513}
+},
+"salute_7.png":
+{
+	"frame": {"x":3000,"y":0,"w":500,"h":513},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":500,"h":513},
+	"sourceSize": {"w":500,"h":513}
+},
+"salute_8.png":
+{
+	"frame": {"x":3500,"y":0,"w":500,"h":513},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":500,"h":513},
+	"sourceSize": {"w":500,"h":513}
+},
+"salute_9.png":
+{
+	"frame": {"x":4000,"y":0,"w":500,"h":513},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":500,"h":513},
+	"sourceSize": {"w":500,"h":513}
+}},
+"animations": {
+	"fire": ["salute_1.png","salute_2.png","salute_3.png","salute_4.png","salute_5.png","salute_6.png","salute_7.png","salute_8.png","salute_9.png"]
+},
+"meta": {
+	"app": "https://www.codeandweb.com/texturepacker",
+	"version": "1.0",
+	"image": "salute.png",
+	"format": "RGBA8888",
+	"size": {"w":500,"h":513},
+	"scale": "1",
+	"smartupdate": "$TexturePacker:SmartUpdate:671e822a5d02ba2955d448c01dff6fa3:aed6cce7f5dcfaaa5eee4dc5730c2257:ec6c3e0b9eb3cd3c555a7c426f3b0ee8$"
+}
+}

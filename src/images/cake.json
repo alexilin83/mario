@@ -1,0 +1,39 @@
+{"frames": {
+
+"cake_1.png":
+{
+	"frame": {"x":0,"y":0,"w":200,"h":200},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":200,"h":200},
+	"sourceSize": {"w":200,"h":200}
+},
+"cake_2.png":
+{
+	"frame": {"x":200,"y":0,"w":200,"h":200},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":200,"h":200},
+	"sourceSize": {"w":200,"h":200}
+},
+"cake_3.png":
+{
+	"frame": {"x":400,"y":0,"w":200,"h":200},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":200,"h":200},
+	"sourceSize": {"w":200,"h":200}
+}},
+"animations": {
+	"cake": ["cake_1.png","cake_2.png","cake_3.png"]
+},
+"meta": {
+	"app": "https://www.codeandweb.com/texturepacker",
+	"version": "1.0",
+	"image": "cake.png",
+	"format": "RGBA8888",
+	"size": {"w":200,"h":200},
+	"scale": "1",
+	"smartupdate": "$TexturePacker:SmartUpdate:671e822a5d02ba2955d448c01dff6fa3:aed6cce7f5dcfaaa5eee4dc5730c2257:ec6c3e0b9eb3cd3c555a7c426f3b0ee8$"
+}
+}

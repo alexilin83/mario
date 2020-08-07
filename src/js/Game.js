@@ -17,6 +17,8 @@ export default class Game {
 
         this.state = this.play;
 
+        this.isComplete = false;
+
         this.app = null;
         this.loader = Loader.shared;
 
@@ -45,6 +47,9 @@ export default class Game {
         this.message = new Text('', this.textStyle);
         this.message.visible = false;
 
+        this.completeMessage = new Text('', this.textStyle);
+        this.completeMessage.visible = false;
+
     }
     init() {
         this.app = new Application({
@@ -64,9 +69,12 @@ export default class Game {
             .add("player", "images/player.json")
             .add("enemy", "images/enemy.json")
             .add("dog", "images/dog.json")
+            .add("salute", "images/salute.json")
+            .add("cake", "images/cake.json")
             .add("main", "sound/main.mp3")
             .add("jump", "sound/jump.wav")
             .add("kick", "sound/kick.wav")
+            .add("happy", "sound/happy.mp3")
             .load(this.setup);
     }
     setup(loader, resources) {
@@ -110,10 +118,14 @@ export default class Game {
         }
       
         this.gameScene.addChild(this.message);
+        this.gameScene.addChild(this.completeMessage);
 
         this.message.anchor.set(0.5, 0.5);
         this.message.x = this.w / 2;
         this.message.y = this.h / 2;
+        this.completeMessage.anchor.set(0.5, 0.5);
+        this.completeMessage.x = this.w / 2;
+        this.completeMessage.y = this.h / 2;
 
         this.app.ticker.add(delta => this.gameLoop(delta));
     }
@@ -260,7 +272,7 @@ export default class Game {
 
             this.reload();
 
-            this.message.text = 'Looser!';
+            this.message.text = 'oops...';
             this.blinkObject(this.message, 3);
         }
     }
